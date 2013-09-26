@@ -6,4 +6,4 @@ Python
 
 * Some may use the Pygame library (http://www.pygame.org/), which I'm using for graphics projects for school.
 
-* I'm a weird teenager who writes code when he's bored, what more is there to say?
+* I'm a teenager who writes code when he's bored, what more is there to say?
