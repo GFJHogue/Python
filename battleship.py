@@ -19,7 +19,7 @@ def ship(s):#ship spawning (s=length of ship)
 					maps[shipx+c]=maps[shipx+c].replace("O","X")
 	return
 def blit(g):#format grid for display
-	blit="  0 1 2 3 4 5 6 7 8 9\nA "
+	blit="\n  0 1 2 3 4 5 6 7 8 9\nA "
 	blit=blit+"".join(g[0:10])+"B "+"".join(g[10:20])+"C "+"".join(g[20:30])+"D "+"".join(g[30:40])+"E "+"".join(g[40:50])+"F "+"".join(g[50:60])+"G "+"".join(g[60:70])+"H "+"".join(g[70:80])+"I "+"".join(g[80:90])+"J "+"".join(g[90:100])
 	return(blit)
 def hits(c):#calculates user input
@@ -51,7 +51,7 @@ def hits(c):#calculates user input
 def win(v=False):#check if all ships have been sunk, restarting/closing game
 	e=True
 	for c in range(0,100):
-		if(maps[c]!=grid[c]):#checks if all ships have been sunk
+		if(maps[c][0]!=grid[c][0]):#checks if all ships have been sunk
 			e=False
 	if((e==True)or(v==True)):
 		r=raw_input("\ /  _        \        / .  __  |\n |  / \ |  |   \  /\  /  | |  | |\n |  \_/ |__|    \/  \/   | |  | .\n\nTry again? (y/n) ")
@@ -77,6 +77,6 @@ ship(3)
 ship(2)
 print(" _       |   |  |  _   ___ |   .  _     _\n|_\  _  -|- -|- | |_| |__  |_  | |_|   |_| \/\n|_/ |_\  |   |  | |__ ___| | | | |   . |   /\n\n\n\n\n\n\n\n")
 while(True):#main game sequence
-	print("\n"+blit(grid))#print grid
+	print(blit(grid))#print grid
 	hits(raw_input("->"))#shoot
 	win()#check if won
