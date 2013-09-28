@@ -8,21 +8,21 @@ screen=pygame.display.set_mode((1138,640))
 
 link=pygame.sprite.Sprite()
 link.images=[""]
-link.images.append(pygame.image.load("linkDL1.png"))
-link.images.append(pygame.image.load("linkD1.png"))
-link.images.append(pygame.image.load("linkDR1.png"))
-link.images.append(pygame.image.load("linkL1.png"))
+link.images.append(pygame.image.load("textures/entities/linkDL1.png"))
+link.images.append(pygame.image.load("textures/entities/linkD1.png"))
+link.images.append(pygame.image.load("textures/entities/linkDR1.png"))
+link.images.append(pygame.image.load("textures/entities/linkL1.png"))
 link.images.append("")
-link.images.append(pygame.image.load("linkR1.png"))
-link.images.append(pygame.image.load("linkUL1.png"))
-link.images.append(pygame.image.load("linkU1.png"))
-link.images.append(pygame.image.load("linkUR1.png"))
+link.images.append(pygame.image.load("textures/entities/linkR1.png"))
+link.images.append(pygame.image.load("textures/entities/linkUL1.png"))
+link.images.append(pygame.image.load("textures/entities/linkU1.png"))
+link.images.append(pygame.image.load("textures/entities/linkUR1.png"))
 link.image=link.images[2]
 link.rect=link.image.get_rect()
 linkXY=[0,0,0,0,72,72]
 
 tree=pygame.sprite.Sprite()
-tree.image=pygame.image.load("tree1.png")
+tree.image=pygame.image.load("textures/entities/tree1.png")
 tree.rect=tree.image.get_rect()
 treeXY=[100,300,0,0,128,160]
 
@@ -90,4 +90,4 @@ while(True):
     blit(tree,treeXY)
     blit(link,linkXY)
     pygame.display.update([link.rect,tree.rect])
-    pygame.time.wait(5)
+    pygame.time.wait(3)
