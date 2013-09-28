@@ -1,6 +1,6 @@
 Python
 ======
-* Random projects of mine in Python 2.7.x, here (http://python.org/).
+* Random projects of mine in Python 2.7.x (http://python.org/).
 
 * Using Geany text-editor (http://www.geany.org/).
 
