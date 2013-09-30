@@ -132,7 +132,7 @@ def sprites(s,c):
     else:
         s.frame=s.frame+0.33
         if(s.frame>len(s.images[c[7]])-1):
-            s.frame=1
+            s.frame=0
         s.image=s.images[c[7]][int(s.frame)]
     return
 
