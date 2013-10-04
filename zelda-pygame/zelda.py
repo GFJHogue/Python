@@ -13,7 +13,7 @@ screen.blit(text_intro1,(400,340))
 pygame.display.flip()
 pygame.time.wait(2000)
 
-
+#entities
 link=pygame.sprite.Sprite()
 link.images=[["",[],[],[],[],"",[],[],[],[]],["","",[],"",[],"",[],"",[],""],["","",[],"",[],"",[],"",[],""],[]]#["",[DR],[D],[DR],[L],"",[R],[UL],[U],[UR]]
 link.images[0][1].append(pygame.image.load("textures/entities/linkDL.png"))
@@ -132,7 +132,7 @@ link.images[2][2].append(pygame.image.load("textures/entities/link_2D.png"))
 link.images[2][4].append(pygame.image.load("textures/entities/link_2L.png"))
 link.images[2][6].append(pygame.image.load("textures/entities/link_2R.png"))
 link.images[2][8].append(pygame.image.load("textures/entities/link_2U.png"))
-link.images[3]A.append(pygame.image.load("textures/entities/link_3.png"))
+link.images[3].append(pygame.image.load("textures/entities/link_3.png"))
 link.frame=0
 link.image=link.images[1][2][0]#[facingDirection][frame]
 link.rect=link.image.get_rect()
@@ -142,6 +142,21 @@ tree=pygame.sprite.Sprite()
 tree.image=pygame.image.load("textures/entities/tree_1.png")
 tree.rect=tree.image.get_rect()
 treeXY=[400,300,0,0,128,160,1,2,0]
+tree.rect.topleft=(400,300)
+
+chest=pygame.sprite.Sprite()
+chest.images=[]
+chest.images.append(pygame.image.load("textures/entities/chest_1.png"))
+chest.images.append(pygame.image.load("textures/entities/chest_1O.png"))
+chest.image=chest.images[0]
+chest.rect=chest.image.get_rect()
+chestXY=[1000,500,0,0,32,32,1,2,0]
+
+#items
+sword=pygame.sprite.Sprite()
+sword.image=pygame.image.load("textures/items/sword.png")
+sword.rect=sword.image.get_rect()
+swordXY=[0,0,0,0,72,72,1,2,0]
 
 
 def coords(s):
@@ -154,7 +169,7 @@ def moveme(c):
         c[0]=c[0]-c[2]
     if(c[1]<0)or(c[1]>640-c[5]):
         c[1]=c[1]-c[3]
-    return
+    return(c)
 
 def blit(s,c):
     s.rect.topleft=coords(c)
@@ -197,6 +212,37 @@ def sprites(s,c):
         s.image=s.images[c[8]][c[7]][int(s.frame)]
     return
 
+def solidobject(c,o,h,v):
+    if(c[0]+c[4]-h>o[0])and(c[0]+h<o[0]+o[4])and(c[1]+c[5]-v>o[1])and(c[1]+v<o[1]+o[5]):
+        c[0]=c[0]-c[2]
+        c[1]=c[1]-c[3]
+    return
+
+def layer(a,axy,b,bxy):
+    if(pygame.sprite.collide_rect(a,b)):
+        if(axy[1]+axy[5]/2>bxy[1]+bxy[5]/2):
+            blit(b,bxy)
+            blit(a,axy)
+        else:
+            blit(a,axy)
+            blit(b,bxy)
+    return
+
+def chests(c,cxy,i,ixy,s,sxy):
+    if(keys[pygame.K_SPACE])and(pygame.sprite.collide_rect(s,c)):
+        c.image=c.images[1]
+        s.image=s.images[3][0]
+        ixy[0]=sxy[0]
+        ixy[1]=sxy[1]-35
+        blit(c,cxy)
+        blit(s,sxy)
+        blit(i,ixy)
+        pygame.display.update([link.rect,chest.rect,sword.rect])
+        if(i==sword):
+            sxy[8]=1
+            sxy[6]=4
+        pygame.time.wait(5000)
+        screen.fill((74,156,74))
 
 screen.fill((74,156,74))
 pygame.display.update()
@@ -220,9 +266,18 @@ while(True):
         linkXY[2]=0
 
     screen.fill((74,156,74))
-    moveme(linkXY)
-    sprites(link,linkXY)
+
+    sprites(link,moveme(linkXY))
+    solidobject(linkXY,treeXY,33,45)
+    solidobject(linkXY,chestXY,24,24)
+    
+    chests(chest,chestXY,sword,swordXY,link,linkXY)
+
     blit(link,linkXY)
+    blit(chest,chestXY)
     blit(tree,treeXY)
-    pygame.display.update([link.rect,tree.rect])
+    layer(link,linkXY,tree,treeXY)
+    layer(link,linkXY,chest,chestXY)
+
+    pygame.display.update([link.rect,tree.rect,chest.rect,sword.rect])
     pygame.time.wait(23)
