@@ -14,6 +14,9 @@ screen.blit(text_intro1,(400,340))
 pygame.display.flip()
 pygame.time.wait(3000)
 
+rupees=0
+lives=0
+
 #entities
 link=pygame.sprite.Sprite()
 link.images=[["",[],[],[],[],"",[],[],[],[]],["","",[],"",[],"",[],"",[],""],["","",[],"",[],"",[],"",[],""],[],["","",[],"",[],"",[],"",[],""]]#["",[DR],[D],[DR],[L],"",[R],[UL],[U],[UR]]
@@ -170,7 +173,7 @@ link.images[4][8].append(pygame.image.load("textures/entities/link_4U8.png"))
 link.frame=0
 link.image=link.images[1][2][0]#[facingDirection][frame]
 link.rect=link.image.get_rect()
-linkXY=[0,0,0,0,72,72,8,2,0]#[x,y,movex,movey,sizex,sizey,facingDirections,facing,type]
+linkXY=[0,0,0,0,72,72,4,2,1]#[x,y,movex,movey,sizex,sizey,facingDirections,facing,type]
 
 tree=pygame.sprite.Sprite()
 tree.image=pygame.image.load("textures/entities/tree_1.png")
@@ -200,6 +203,12 @@ sword=pygame.sprite.Sprite()
 sword.image=pygame.image.load("textures/items/sword.png")
 sword.rect=sword.image.get_rect()
 swordXY=[0,0,0,0,72,72,1,2,0]
+
+fftyrupees=pygame.sprite.Sprite()
+fftyrupees.image=pygame.image.load("textures/items/50rupees.png")
+fftyrupees.rect=fftyrupees.image.get_rect()
+fftyrupeesXY=[0,0,0,0,72,72,1,2,0]
+fftyrupees.value=50
 
 #music
 pygame.mixer.music.load("audio/music/overworld.ogg")
@@ -321,7 +330,7 @@ def swing(e=[],exy=[]):
         
         if(link.rect.collidelistall(rectlist(e))):
             en=link.rect.collidelistall(rectlist(e))[0]
-            if((linkXY[7]==2)and(linkXY[1]<exy[en][1]))or((linkXY[7]==4)and(linkXY[0]<exy[en][0]))or((linkXY[7]==6)and(linkXY[0]>exy[en][0]))or((linkXY[7]==8)and(linkXY[1]>exy[en][1])):
+            if((linkXY[7]==2)and(linkXY[1]<exy[en][1]))or((linkXY[7]==4)and(linkXY[0]>exy[en][0]))or((linkXY[7]==6)and(linkXY[0]<exy[en][0]))or((linkXY[7]==8)and(linkXY[1]>exy[en][1])):
                 e[en].damage=1
         
         sprites(link,linkXY)
@@ -375,20 +384,37 @@ def chests(c,cxy,i,ixy,s,sxy):
 
 def bushes(b,bxy,sxy):
     if(b.damage==1):
+        sound_grasscut.play()
         b.damage=3
         b.image=b.images[1]
         b.r=False
-        sound_grasscut.play()
+        drop(bxy,0)
     if(b.image==b.images[0]):
         solidobject(sxy,bxy,24,20)
         b.r=True
+    return
+
+def drop(lxy,t):
+    if(t==0):
+        fftyrupeesXY[0]=lxy[0]
+        fftyrupeesXY[1]=lxy[1]
+        fftyrupeesXY[8]=1
+    return
+
+def pickup(i,ixy):
+    global rupees
+    if(ixy[8]==1):
+        blit(i,ixy)
+        if(i.rect.colliderect(link.rect.inflate(-24,-24))):
+            ixy[8]=0
+            rupees=rupees+i.value
+    return
 
 screen.fill((74,156,74))
 pygame.display.update()
 
 pygame.mixer.music.play()
 intro=1
-
 
 while(True):
     if(7055>pygame.mixer.music.get_pos()>7005)and(intro==1):
@@ -431,6 +457,8 @@ while(True):
     layer(link,linkXY,tree,treeXY)
     layer(link,linkXY,chest,chestXY)
     layer(link,linkXY,bush,bushXY,bush.r)
+    pickup(fftyrupees,fftyrupeesXY)
 
-    pygame.display.update([link.rect,tree.rect,chest.rect,sword.rect,bush.rect])
+    pygame.display.update([link.rect,tree.rect,chest.rect,sword.rect,bush.rect,fftyrupees.rect])
     pygame.time.wait(20)
+
