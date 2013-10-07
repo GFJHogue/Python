@@ -12,7 +12,7 @@ screen.fill((74,156,74))
 screen.blit(text_intro0,(100,200))
 screen.blit(text_intro1,(400,340))
 pygame.display.flip()
-pygame.time.wait(100)
+pygame.time.wait(3000)
 
 #entities
 link=pygame.sprite.Sprite()
@@ -186,6 +186,15 @@ chest.image=chest.images[0]
 chest.rect=chest.image.get_rect()
 chestXY=[1000,500,0,0,32,32,1,2,0]
 
+bush=pygame.sprite.Sprite()
+bush.images=[]
+bush.images.append(pygame.image.load("textures/entities/bush_1.png"))
+bush.images.append(pygame.image.load("textures/entities/bush_1B.png"))
+bush.image=bush.images[0]
+bush.rect=bush.image.get_rect()
+bush.damage=0
+bushXY=[800,100,0,0,32,32,1,2,0]
+
 #items
 sword=pygame.sprite.Sprite()
 sword.image=pygame.image.load("textures/items/sword.png")
@@ -204,9 +213,17 @@ sound_sword.append(pygame.mixer.Sound("audio/sounds/sword4.ogg"))
 
 sound_itemfanfare=pygame.mixer.Sound("audio/sounds/itemfanfare.ogg")
 
+sound_grasscut=pygame.mixer.Sound("audio/sounds/grasscut.ogg")
+
 
 def coords(s):
     return((s[0],s[1]))#(x,y)
+
+def rectlist(l):
+    rl=[]
+    for c in range(0,len(l)):
+        rl.append(l[c].rect)
+    return(rl)
 
 def moveme(c):
     c[0]=c[0]+c[2]
@@ -258,7 +275,7 @@ def sprites(s,c):
         s.image=s.images[c[8]][c[7]][int(s.frame)]
     return
 
-def swing():
+def swing(e=[],exy=[]):
     if(keys[pygame.K_SPACE])and(linkXY[8]==1):
         sound_sword[random.randint(0,3)].play()
         div=1
@@ -279,11 +296,13 @@ def swing():
         for frame in range(0,9):
             link.image=link.images[4][linkXY[7]][int(frame/div)]
             screen.fill((74,156,74))
+            blit(bush,bushXY)
             blit(link,linkXY)
             blit(tree,treeXY)
             blit(chest,chestXY)
             layer(link,linkXY,tree,treeXY)
             layer(link,linkXY,chest,chestXY)
+            layer(link,linkXY,bush,bushXY,bush.r)
             pygame.display.update([link.rect])
             pygame.time.wait(23)
         
@@ -300,14 +319,22 @@ def swing():
             linkXY[0]=linkXY[0]+4
             linkXY[1]=linkXY[1]+14
         
+        if(link.rect.collidelistall(rectlist(e))):
+            en=link.rect.collidelistall(rectlist(e))[0]
+            if((linkXY[7]==2)and(linkXY[1]<exy[en][1]))or((linkXY[7]==4)and(linkXY[0]<exy[en][0]))or((linkXY[7]==6)and(linkXY[0]>exy[en][0]))or((linkXY[7]==8)and(linkXY[1]>exy[en][1])):
+                e[en].damage=1
+        
         sprites(link,linkXY)
         screen.fill((74,156,74))
+        blit(bush,bushXY)
         blit(link,linkXY)
         blit(tree,treeXY)
         blit(chest,chestXY)
         layer(link,linkXY,tree,treeXY)
         layer(link,linkXY,chest,chestXY)
+        layer(link,linkXY,bush,bushXY,bush.r)
         pygame.display.update()
+        return
 
 def solidobject(c,o,h,v):
     if(c[0]+c[4]-h>o[0])and(c[0]+h<o[0]+o[4])and(c[1]+c[5]-v>o[1])and(c[1]+v<o[1]+o[5]):
@@ -315,8 +342,8 @@ def solidobject(c,o,h,v):
         c[1]=c[1]-c[3]
     return
 
-def layer(a,axy,b,bxy):
-    if(pygame.sprite.collide_rect(a,b)):
+def layer(a,axy,b,bxy,r=True):
+    if(pygame.sprite.collide_rect(a,b))and(r==True):
         if(axy[1]+axy[5]/2>bxy[1]+bxy[5]/2):
             blit(b,bxy)
             blit(a,axy)
@@ -338,11 +365,23 @@ def chests(c,cxy,i,ixy,s,sxy):
         if(i==sword):
             sxy[8]=1
             sxy[6]=4
+            sxy[7]=2
         pygame.mixer.music.pause()
         sound_itemfanfare.play()
         pygame.time.wait(1020)
         pygame.mixer.music.unpause()
         screen.fill((74,156,74))
+    return
+
+def bushes(b,bxy,sxy):
+    if(b.damage==1):
+        b.damage=3
+        b.image=b.images[1]
+        b.r=False
+        sound_grasscut.play()
+    if(b.image==b.images[0]):
+        solidobject(sxy,bxy,24,20)
+        b.r=True
 
 screen.fill((74,156,74))
 pygame.display.update()
@@ -355,7 +394,7 @@ while(True):
     if(7055>pygame.mixer.music.get_pos()>7005)and(intro==1):
         pygame.mixer.music.play(-1,7.03)
         intro=0
-    if(35075>pygame.mixer.music.get_pos()>35015):
+    if(35125>pygame.mixer.music.get_pos()>34965):
         pygame.mixer.music.play(-1,7.03)
     event=pygame.event.poll()
     keys=pygame.key.get_pressed()
@@ -375,7 +414,7 @@ while(True):
         linkXY[2]=0
 
     sprites(link,moveme(linkXY))
-    swing()
+    swing([bush],[bushXY])
 
     screen.fill((74,156,74))
 
@@ -383,12 +422,15 @@ while(True):
     solidobject(linkXY,chestXY,24,24)
 
     chests(chest,chestXY,sword,swordXY,link,linkXY)
+    bushes(bush,bushXY,linkXY)
 
+    blit(bush,bushXY)
     blit(link,linkXY)
     blit(tree,treeXY)
     blit(chest,chestXY)
     layer(link,linkXY,tree,treeXY)
     layer(link,linkXY,chest,chestXY)
+    layer(link,linkXY,bush,bushXY,bush.r)
 
-    pygame.display.update([link.rect,tree.rect,chest.rect,sword.rect])
+    pygame.display.update([link.rect,tree.rect,chest.rect,sword.rect,bush.rect])
     pygame.time.wait(20)
