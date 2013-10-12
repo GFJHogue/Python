@@ -1,4 +1,5 @@
-import sys, random
+from sys import exit
+from random import randint
 import pygame
 
 pygame.init()
@@ -173,7 +174,7 @@ link.images[4][8].append(pygame.image.load("textures/entities/link_4U8.png"))
 link.frame=0
 link.image=link.images[1][2][0]#[facingDirection][frame]
 link.rect=link.image.get_rect()
-linkXY=[0,0,0,0,72,72,4,2,1]#[x,y,movex,movey,sizex,sizey,facingDirections,facing,type]
+linkXY=[0,0,0,0,72,72,8,2,0]#[x,y,movex,movey,sizex,sizey,facingDirections,facing,type]
 
 tree=pygame.sprite.Sprite()
 tree.image=pygame.image.load("textures/entities/tree_1.png")
@@ -224,8 +225,12 @@ sound_itemfanfare=pygame.mixer.Sound("audio/sounds/itemfanfare.ogg")
 
 sound_grasscut=pygame.mixer.Sound("audio/sounds/grasscut.ogg")
 
+sound_rupee=[]
+sound_rupee.append(pygame.mixer.Sound("audio/sounds/rupee1.ogg"))
+sound_rupee.append(pygame.mixer.Sound("audio/sounds/rupee2.ogg"))
 
-def coords(s):
+
+def coords(s):#len(s)>=2
     return((s[0],s[1]))#(x,y)
 
 def rectlist(l):
@@ -234,7 +239,7 @@ def rectlist(l):
         rl.append(l[c].rect)
     return(rl)
 
-def moveme(c):
+def moveme(c):#len(c)>=6
     c[0]=c[0]+c[2]
     c[1]=c[1]+c[3]
     if(c[0]<0)or(c[0]>1138-c[4]):
@@ -243,11 +248,11 @@ def moveme(c):
         c[1]=c[1]-c[3]
     return(c)
 
-def blit(s,c):
+def blit(s,c):#len(c)>=2
     s.rect.topleft=coords(c)
     return(screen.blit(s.image,s.rect))
 
-def sprites(s,c):
+def sprites(s,c):#len(c)>=9
     if(c[6]==8):
         if(c[2]<0)and(c[3]>0):
             c[7]=1
@@ -284,9 +289,9 @@ def sprites(s,c):
         s.image=s.images[c[8]][c[7]][int(s.frame)]
     return
 
-def swing(e=[],exy=[]):
+def swing(e=[],exy=[]):#len(e)==len(exy)
     if(keys[pygame.K_SPACE])and(linkXY[8]==1):
-        sound_sword[random.randint(0,3)].play()
+        sound_sword[randint(0,3)].play()
         div=1
         if(linkXY[7]==2):
             linkXY[0]=linkXY[0]+6
@@ -345,13 +350,13 @@ def swing(e=[],exy=[]):
         pygame.display.update()
         return
 
-def solidobject(c,o,h,v):
+def solidobject(c,o,h,v):#len(c)>=6,len(o)>=6
     if(c[0]+c[4]-h>o[0])and(c[0]+h<o[0]+o[4])and(c[1]+c[5]-v>o[1])and(c[1]+v<o[1]+o[5]):
-        c[0]=c[0]-c[2]
-        c[1]=c[1]-c[3]
+            c[0]=c[0]-c[2]
+            c[1]=c[1]-c[3]
     return
 
-def layer(a,axy,b,bxy,r=True):
+def layer(a,axy,b,bxy,r=True):#len(axy)>=6, len(bxy)>=6
     if(pygame.sprite.collide_rect(a,b))and(r==True):
         if(axy[1]+axy[5]/2>bxy[1]+bxy[5]/2):
             blit(b,bxy)
@@ -383,7 +388,7 @@ def chests(c,cxy,i,ixy,s,sxy):
     return
 
 def bushes(b,bxy,sxy):
-    if(b.damage==1):
+    if(b.damage==1)and(b.image==b.images[0]):
         sound_grasscut.play()
         b.damage=3
         b.image=b.images[1]
@@ -401,11 +406,12 @@ def drop(lxy,t):
         fftyrupeesXY[8]=1
     return
 
-def pickup(i,ixy):
+def pickup(i,ixy):#len(ixy)>=9
     global rupees
     if(ixy[8]==1):
         blit(i,ixy)
         if(i.rect.colliderect(link.rect.inflate(-24,-24))):
+            sound_rupee[randint(0,1)].play()
             ixy[8]=0
             rupees=rupees+i.value
     return
@@ -417,15 +423,16 @@ pygame.mixer.music.play()
 intro=1
 
 while(True):
-    if(7055>pygame.mixer.music.get_pos()>7005)and(intro==1):
+    pos=pygame.mixer.music.get_pos()
+    if(7055>pos>7005)and(intro==1):
         pygame.mixer.music.play(-1,7.03)
         intro=0
-    if(35125>pygame.mixer.music.get_pos()>34965):
+    if(pos>34965):
         pygame.mixer.music.play(-1,7.03)
     event=pygame.event.poll()
     keys=pygame.key.get_pressed()
     if(event.type==pygame.QUIT)or(keys[pygame.K_ESCAPE]):
-        sys.exit()
+        exit()
     if(keys[pygame.K_w]):
         linkXY[3]=-4
     if(keys[pygame.K_a]):
@@ -461,4 +468,3 @@ while(True):
 
     pygame.display.update([link.rect,tree.rect,chest.rect,sword.rect,bush.rect,fftyrupees.rect])
     pygame.time.wait(20)
-
