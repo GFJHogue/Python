@@ -20,6 +20,7 @@ pygame.time.wait(3000)
 rupees = 0
 lives = 0
 
+
 #entities
 link = pygame.sprite.Sprite()
 link.images = [["",[],[],[],[],"",[],[],[],[]],["","",[],"",[],"",[],"",[],""],
