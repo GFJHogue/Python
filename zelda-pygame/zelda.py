@@ -10,7 +10,8 @@ pygame.display.set_caption("The Legend of Zelda: A Link To The Python")
 screen = pygame.display.set_mode((1138,640))
 font = pygame.font.Font(None,100)
 text_intro0 = font.render("The Legend of Zelda:",True,(255,0,0),(74,156,74))
-text_intro1 = font.render("A Link To The Python",True,(255,255,128),(74,156,74))
+text_intro1 = font.render("A Link To The Python",True,
+                          (255,255,128),(74,156,74))
 screen.fill((74,156,74))
 screen.blit(text_intro0,(100,200))
 screen.blit(text_intro1,(400,340))
@@ -24,7 +25,8 @@ lives = 0
 #entities
 link = pygame.sprite.Sprite()
 link.images = [["",[],[],[],[],"",[],[],[],[]],["","",[],"",[],"",[],"",[],""],
-    ["","",[],"",[],"",[],"",[],""],[],["","",[],"",[],"",[],"",[],""]]#["",[DR],[D],[DR],[L],"",[R],[UL],[U],[UR]]
+    ["","",[],"",[],"",[],"",[],""],[],["","",[],"",[],"",[],"",[],""]]
+    #["",[DR],[D],[DR],[L],"",[R],[UL],[U],[UR]]
 link.images[0][1].append(pygame.image.load("textures/entities/linkDL.png"))
 link.images[0][1].append(pygame.image.load("textures/entities/linkDL1.png"))
 link.images[0][1].append(pygame.image.load("textures/entities/linkDL.png"))
@@ -178,7 +180,8 @@ link.images[4][8].append(pygame.image.load("textures/entities/link_4U8.png"))
 link.frame = 0
 link.image = link.images[1][2][0]#[facingDirection][frame]
 link.rect = link.image.get_rect()
-linkXY = [0,0,0,0,72,72,8,2,0]#[x,y,movex,movey,sizex,sizey,facingDirections,facing,type]
+linkXY = [0,0,0,0,72,72,8,2,0]
+#[x,y,movex,movey,sizex,sizey,facingDirections,facing,type]
 
 tree = pygame.sprite.Sprite()
 tree.image = pygame.image.load("textures/entities/tree_1.png")
@@ -339,8 +342,10 @@ def swing(e = [],exy = []):#len(e) == len(exy)
         
         if(link.rect.collidelistall(rectlist(e))):
             en = link.rect.collidelistall(rectlist(e))[0]
-            if(((linkXY[7] == 2)and(linkXY[1] < exy[en][1]))or((linkXY[7] == 4)and(linkXY[0] > exy[en][0]))or
-                ((linkXY[7] == 6)and(linkXY[0] < exy[en][0]))or((linkXY[7] == 8)and(linkXY[1] > exy[en][1]))):
+            if(((linkXY[7] == 2)and(linkXY[1] < exy[en][1]))or
+                    ((linkXY[7] == 4)and(linkXY[0] > exy[en][0]))or
+                    ((linkXY[7] == 6)and(linkXY[0] < exy[en][0]))or
+                    ((linkXY[7] == 8)and(linkXY[1] > exy[en][1]))):
                 e[en].damage = 1
         
         sprites(link,linkXY)
@@ -356,9 +361,10 @@ def swing(e = [],exy = []):#len(e) == len(exy)
         return
 
 def solidobject(c,o,h,v):#len(c) >= 6,len(o) >= 6
-    if(c[0] + c[4] - h > o[0])and(c[0] + h < o[0] + o[4])and(c[1] + c[5] - v > o[1])and(c[1] + v < o[1] + o[5]):
-            c[0] = c[0] - c[2]
-            c[1] = c[1] - c[3]
+    if(c[0] + c[4] - h > o[0])and(c[0] + h < o[0] + o[4])and
+            (c[1] + c[5] - v > o[1])and(c[1] + v < o[1] + o[5]):
+        c[0] = c[0] - c[2]
+        c[1] = c[1] - c[3]
     return
 
 def layer(a,axy,b,bxy,r = True):#len(axy) >= 6, len(bxy) >= 6
@@ -372,7 +378,8 @@ def layer(a,axy,b,bxy,r = True):#len(axy) >= 6, len(bxy) >= 6
     return
 
 def chests(c,cxy,i,ixy,s,sxy):
-    if(keys[pygame.K_e])and(pygame.sprite.collide_rect(s,c))and(c.image == c.images[0]):
+    if((keys[pygame.K_e])and(pygame.sprite.collide_rect(s,c))and
+            (c.image == c.images[0])):
         c.image = c.images[1]
         s.image = s.images[3][0]
         ixy[0] = sxy[0]
@@ -448,9 +455,11 @@ while(True):
         linkXY[3] = 4
     if(keys[pygame.K_d]):
         linkXY[2] = 4
-    if((keys[pygame.K_w])and(keys[pygame.K_s]))or((keys[pygame.K_w] == False)and(keys[pygame.K_s] == False)):
+    if((keys[pygame.K_w])and(keys[pygame.K_s]))or
+            ((keys[pygame.K_w] == False)and(keys[pygame.K_s] == False)):
         linkXY[3] = 0
-    if((keys[pygame.K_a])and(keys[pygame.K_d]))or((keys[pygame.K_a] == False)and(keys[pygame.K_d] == False)):
+    if((keys[pygame.K_a])and(keys[pygame.K_d]))or
+            ((keys[pygame.K_a] == False)and(keys[pygame.K_d] == False)):
         linkXY[2] = 0
 
     sprites(link,moveme(linkXY))
@@ -473,5 +482,6 @@ while(True):
     layer(link,linkXY,bush,bushXY,bush.r)
     pickup(fftyrupees,fftyrupeesXY)
 
-    pygame.display.update([link.rect, tree.rect, chest.rect, sword.rect, bush.rect, fftyrupees.rect])
+    pygame.display.update([link.rect, tree.rect, chest.rect, sword.rect,
+                           bush.rect, fftyrupees.rect])
     pygame.time.wait(20)
