@@ -1,3 +1,5 @@
+#School Assignment that deals with number validation using the Lehn Algorithm.
+
 from os import system
 
 import pygame
