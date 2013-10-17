@@ -12,21 +12,32 @@ while True:
     while True:
         n = raw_input("Enter a 9 or 16 Digit Number: ")
         
-        if(n.isdigit() and (len(n) == 9 or len(n) == 16)):
+        if(n.isdigit() and (9 <= len(n) <= 16)):
             system("cls")
             break
         
         system("cls")
         print "[ERROR] Please Try Again.\n"
     
-    c = int(n[len(n)-1])
-    a = list(n[len(n)-2::-1])
-    
+    if len(n) == 9:
+        n = n + "0"
+        c = 0
+        a = list(n[len(n) - 1::-1])
+        n = n[:9]
+    else:
+        c = int(n[len(n) - 1])
+        a = list(n[len(n) - 2::-1])
+
     for l in range(0, len(a),2):
         a[l] = str(int(a[l]) * 2)
-        if int(a[l]) > 9:
+        
+        if len(a) == 9 and int(a[l]) >9:
+            a[l] = str(int(a[l][0]) + int(a[l][1]))
+        elif int(a[l]) > 9:
             a[l] = str(int(a[l]) - 9)
-
+    
+    print a
+    
     for l in range(0, len(a)):
         t = t + int(a[l])
     
