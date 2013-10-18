@@ -183,6 +183,18 @@ link.rect = link.image.get_rect()
 linkXY = [0,0,0,0,72,72,8,2,0]
 #[x,y,movex,movey,sizex,sizey,facingDirections,facing,type]
 
+lsoldier = pygame.sprite.Sprite()
+lsoldier.images = [["","",[],"",[],"",[],"",[],""],
+    ["","",[],"",[],"",[],"",[],""]]
+lsoldier.images[0][2].append(pygame.image.load("textures/entities/lSoldierD.png"))
+lsoldier.images[0][4].append(pygame.image.load("textures/entities/lSoldierL.png"))
+lsoldier.images[0][6].append(pygame.image.load("textures/entities/lSoldierR.png"))
+lsoldier.images[0][8].append(pygame.image.load("textures/entities/lSoldierU.png"))
+lsoldier.frame = 0
+lsoldier.image = lsoldier.images[0][4][0]
+lsoldier.rect = link.image.get_rect()
+lsoldierXY = [1000,400,0,0,72,72,4,4,0]
+
 tree = pygame.sprite.Sprite()
 tree.image = pygame.image.load("textures/entities/tree_1.png")
 tree.rect = tree.image.get_rect()
@@ -361,8 +373,8 @@ def swing(e = [],exy = []):#len(e) == len(exy)
         return
 
 def solidobject(c,o,h,v):#len(c) >= 6,len(o) >= 6
-    if(c[0] + c[4] - h > o[0])and(c[0] + h < o[0] + o[4])and
-            (c[1] + c[5] - v > o[1])and(c[1] + v < o[1] + o[5]):
+    if((c[0] + c[4] - h > o[0])and(c[0] + h < o[0] + o[4])and
+            (c[1] + c[5] - v > o[1])and(c[1] + v < o[1] + o[5])):
         c[0] = c[0] - c[2]
         c[1] = c[1] - c[3]
     return
@@ -455,26 +467,31 @@ while(True):
         linkXY[3] = 4
     if(keys[pygame.K_d]):
         linkXY[2] = 4
-    if((keys[pygame.K_w])and(keys[pygame.K_s]))or
-            ((keys[pygame.K_w] == False)and(keys[pygame.K_s] == False)):
+    if(((keys[pygame.K_w])and(keys[pygame.K_s]))or
+            ((keys[pygame.K_w] == False)and(keys[pygame.K_s] == False))):
         linkXY[3] = 0
-    if((keys[pygame.K_a])and(keys[pygame.K_d]))or
-            ((keys[pygame.K_a] == False)and(keys[pygame.K_d] == False)):
+    if(((keys[pygame.K_a])and(keys[pygame.K_d]))or
+            ((keys[pygame.K_a] == False)and(keys[pygame.K_d] == False))):
         linkXY[2] = 0
 
     sprites(link,moveme(linkXY))
+    moveme(lsoldierXY)
     swing([bush],[bushXY])
 
     screen.fill((74,156,74))
 
     solidobject(linkXY,treeXY,33,45)
     solidobject(linkXY,chestXY,24,24)
+    solidobject(lsoldierXY,treeXY,33,45)
+    solidobject(lsoldierXY,chestXY,24,24)
+    solidobject(lsoldierXY,linkXY,40,40)
 
     chests(chest,chestXY,sword,swordXY,link,linkXY)
     bushes(bush,bushXY,linkXY)
 
     blit(bush,bushXY)
     blit(link,linkXY)
+    blit(lsoldier,lsoldierXY)
     blit(tree,treeXY)
     blit(chest,chestXY)
     layer(link,linkXY,tree,treeXY)
@@ -483,5 +500,5 @@ while(True):
     pickup(fftyrupees,fftyrupeesXY)
 
     pygame.display.update([link.rect, tree.rect, chest.rect, sword.rect,
-                           bush.rect, fftyrupees.rect])
+                           bush.rect, fftyrupees.rect, lsoldier.rect])
     pygame.time.wait(20)
