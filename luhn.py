@@ -88,6 +88,7 @@ def generateSIN():
             break
     
     print 'New Social Insurance Number: "' + r + '"'
+    h.append(r + ", Generated")
 
 
 h = []
