@@ -46,7 +46,7 @@ def validate(a,m,c):
 
 def generateCCN():
     global h
-    r = str(randint(0,999999999999999))
+    r = str(randint(100000000000000,999999999999999))
     a = list(r[::-1])
     t = 0
     
@@ -59,16 +59,43 @@ def generateCCN():
     for l in range(0,15):
         t = t + int(a[l])
     
-    r = r + str(10 - (t % 10))
+    if t % 10 == 0:
+        r = r + "0"
+    else:
+        r = r + str(10 - (t % 10))
+    
     print 'New Credit Card Number: "' + r + '"'
     h.append(r + ", Generated")
+
+def generateSIN():
+    global h
+    
+    while True:
+        r = str(randint(100000000,999999999))
+        a = list(r)
+        t = 0
+        
+        for l in range(1,9,2):
+            a[l] = str(int(a[l]) * 2)
+            
+            if int(a[l]) > 9:
+                a[l] = str(int(a[l]) - 9)
+        
+        for l in range(0,9):
+            t = t + int(a[l])
+        
+        if t % 10 == 0:
+            break
+    
+    print 'New Social Insurance Number: "' + r + '"'
 
 
 h = []
 
 while True:
     print ("\n1. Check A Credit Card Number\n2. Check A Social Insurance Num" +
-        "ber\n3. Generate A Credit Card Number\n5. View History\n6. Exit\n")
+        "ber\n3. Generate A Credit Card Number\n4. Generate A Social Insuran" +
+        "ce Number\n5. View History\n6. Exit\n")
     menu = raw_input(">")
     system("cls")
     
@@ -80,6 +107,8 @@ while True:
         sin()
     elif menu == "3":
         generateCCN()
+    elif menu == "4":
+        generateSIN()
     elif menu == "5":
         print "[HISTORY]"
         
@@ -88,5 +117,3 @@ while True:
         
     elif menu == "6":
         exit()
-
-
