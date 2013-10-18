@@ -18,7 +18,9 @@ screen.blit(text_intro1,(400,340))
 pygame.display.flip()
 pygame.time.wait(3000)
 
+font = pygame.font.Font(None,32)
 rupees = 0
+text_rupees = font.render(str(rupees),True,(0,255,0))
 lives = 0
 
 
@@ -261,25 +263,25 @@ def rectlist(l):
 def moveme(c):#len(c) >= 6
     c[0] = c[0] + c[2]
     c[1] = c[1] + c[3]
-    if(c[0] < 0)or(c[0] > 1138 - c[4]):
+    if(c[0] < 0) or (c[0] > 1138 - c[4]):
         c[0] = c[0] - c[2]
-    if(c[1] < 0)or(c[1] > 640 - c[5]):
+    if(c[1] < 0) or (c[1] > 640 - c[5]):
         c[1] = c[1] - c[3]
     return(c)
 
-def blit(s,c):#len(c) >= 2
+def sblit(s,c):#len(c) >= 2
     s.rect.topleft = coords(c)
     return(screen.blit(s.image,s.rect))
 
 def sprites(s,c):#len(c) >= 9
     if(c[6] == 8):
-        if(c[2] < 0)and(c[3] > 0):
+        if(c[2] < 0) and (c[3] > 0):
             c[7] = 1
-        elif(c[2] > 0)and(c[3] > 0):
+        elif(c[2] > 0) and (c[3] > 0):
             c[7] = 3
-        elif(c[2] < 0)and(c[3] < 0):
+        elif(c[2] < 0) and (c[3] < 0):
             c[7] = 7
-        elif(c[2] > 0)and(c[3] < 0):
+        elif(c[2] > 0) and (c[3] < 0):
             c[7] = 9
         elif(c[3] > 0):
             c[7] = 2
@@ -298,7 +300,7 @@ def sprites(s,c):#len(c) >= 9
             c[7] = 4
         elif(c[2] > 0):
             c[7] = 6
-    if(c[2] == 0)and(c[3] == 0):
+    if(c[2] == 0) and (c[3] == 0):
         s.frame = 0
         s.image = s.images[c[8]][c[7]][0]
     else:
@@ -309,7 +311,7 @@ def sprites(s,c):#len(c) >= 9
     return
 
 def swing(e = [],exy = []):#len(e) == len(exy)
-    if(keys[pygame.K_SPACE])and(linkXY[8] == 1):
+    if(keys[pygame.K_SPACE]) and (linkXY[8] == 1):
         sound_sword[randint(0,3)].play()
         div = 1
         if(linkXY[7] == 2):
@@ -329,10 +331,10 @@ def swing(e = [],exy = []):#len(e) == len(exy)
         for frame in range(0,9):
             link.image = link.images[4][linkXY[7]][int(frame / div)]
             screen.fill((74,156,74))
-            blit(bush,bushXY)
-            blit(link,linkXY)
-            blit(tree,treeXY)
-            blit(chest,chestXY)
+            sblit(bush,bushXY)
+            sblit(link,linkXY)
+            sblit(tree,treeXY)
+            sblit(chest,chestXY)
             layer(link,linkXY,tree,treeXY)
             layer(link,linkXY,chest,chestXY)
             layer(link,linkXY,bush,bushXY,bush.r)
@@ -354,18 +356,18 @@ def swing(e = [],exy = []):#len(e) == len(exy)
         
         if(link.rect.collidelistall(rectlist(e))):
             en = link.rect.collidelistall(rectlist(e))[0]
-            if(((linkXY[7] == 2)and(linkXY[1] < exy[en][1]))or
-                    ((linkXY[7] == 4)and(linkXY[0] > exy[en][0]))or
-                    ((linkXY[7] == 6)and(linkXY[0] < exy[en][0]))or
-                    ((linkXY[7] == 8)and(linkXY[1] > exy[en][1]))):
+            if(((linkXY[7] == 2) and (linkXY[1] < exy[en][1])) or 
+                    ((linkXY[7] == 4) and (linkXY[0] > exy[en][0])) or 
+                    ((linkXY[7] == 6) and (linkXY[0] < exy[en][0])) or 
+                    ((linkXY[7] == 8) and (linkXY[1] > exy[en][1]))):
                 e[en].damage = 1
         
         sprites(link,linkXY)
         screen.fill((74,156,74))
-        blit(bush,bushXY)
-        blit(link,linkXY)
-        blit(tree,treeXY)
-        blit(chest,chestXY)
+        sblit(bush,bushXY)
+        sblit(link,linkXY)
+        sblit(tree,treeXY)
+        sblit(chest,chestXY)
         layer(link,linkXY,tree,treeXY)
         layer(link,linkXY,chest,chestXY)
         layer(link,linkXY,bush,bushXY,bush.r)
@@ -373,32 +375,32 @@ def swing(e = [],exy = []):#len(e) == len(exy)
         return
 
 def solidobject(c,o,h,v):#len(c) >= 6,len(o) >= 6
-    if((c[0] + c[4] - h > o[0])and(c[0] + h < o[0] + o[4])and
-            (c[1] + c[5] - v > o[1])and(c[1] + v < o[1] + o[5])):
+    if((c[0] + c[4] - h > o[0]) and (c[0] + h < o[0] + o[4]) and 
+            (c[1] + c[5] - v > o[1]) and (c[1] + v < o[1] + o[5])):
         c[0] = c[0] - c[2]
         c[1] = c[1] - c[3]
     return
 
 def layer(a,axy,b,bxy,r = True):#len(axy) >= 6, len(bxy) >= 6
-    if(pygame.sprite.collide_rect(a,b))and(r == True):
+    if(pygame.sprite.collide_rect(a,b)) and (r == True):
         if(axy[1] + axy[5] / 2 > bxy[1] + bxy[5] / 2):
-            blit(b,bxy)
-            blit(a,axy)
+            sblit(b,bxy)
+            sblit(a,axy)
         else:
-            blit(a,axy)
-            blit(b,bxy)
+            sblit(a,axy)
+            sblit(b,bxy)
     return
 
 def chests(c,cxy,i,ixy,s,sxy):
-    if((keys[pygame.K_e])and(pygame.sprite.collide_rect(s,c))and
+    if((keys[pygame.K_e]) and (pygame.sprite.collide_rect(s,c)) and 
             (c.image == c.images[0])):
         c.image = c.images[1]
         s.image = s.images[3][0]
         ixy[0] = sxy[0]
         ixy[1] = sxy[1] - 35
-        blit(c,cxy)
-        blit(s,sxy)
-        blit(i,ixy)
+        sblit(c,cxy)
+        sblit(s,sxy)
+        sblit(i,ixy)
         pygame.display.update([link.rect, chest.rect, sword.rect])
         if(i == sword):
             sxy[8] = 1
@@ -412,7 +414,7 @@ def chests(c,cxy,i,ixy,s,sxy):
     return
 
 def bushes(b,bxy,sxy):
-    if(b.damage == 1)and(b.image == b.images[0]):
+    if(b.damage == 1) and (b.image == b.images[0]):
         sound_grasscut.play()
         b.damage = 3
         b.image = b.images[1]
@@ -431,13 +433,14 @@ def drop(lxy,t):
     return
 
 def pickup(i,ixy):#len(ixy) >= 9
-    global rupees
+    global rupees,text_rupees
     if(ixy[8] == 1):
-        blit(i,ixy)
+        sblit(i,ixy)
         if(i.rect.colliderect(link.rect.inflate(-24,-24))):
             sound_rupee[randint(0,1)].play()
             ixy[8] = 0
             rupees = rupees + i.value
+            text_rupees = font.render(str(rupees),True,(0,255,0))
     return
 
 
@@ -448,16 +451,16 @@ pygame.mixer.music.play()
 intro = 1
 
 
-while(True):
+while True:
     pos = pygame.mixer.music.get_pos()
-    if(7055 > pos > 7005)and(intro == 1):
+    if(7055 > pos > 7005) and (intro == 1):
         pygame.mixer.music.play(-1,7.03)
         intro = 0
     if(pos > 34965):
         pygame.mixer.music.play(-1,7.03)
     event = pygame.event.poll()
     keys = pygame.key.get_pressed()
-    if(event.type == pygame.QUIT)or(keys[pygame.K_ESCAPE]):
+    if(event.type == pygame.QUIT) or (keys[pygame.K_ESCAPE]):
         exit()
     if(keys[pygame.K_w]):
         linkXY[3] = -4
@@ -467,11 +470,11 @@ while(True):
         linkXY[3] = 4
     if(keys[pygame.K_d]):
         linkXY[2] = 4
-    if(((keys[pygame.K_w])and(keys[pygame.K_s]))or
-            ((keys[pygame.K_w] == False)and(keys[pygame.K_s] == False))):
+    if(((keys[pygame.K_w]) and (keys[pygame.K_s])) or 
+            ((keys[pygame.K_w] == False) and (keys[pygame.K_s] == False))):
         linkXY[3] = 0
-    if(((keys[pygame.K_a])and(keys[pygame.K_d]))or
-            ((keys[pygame.K_a] == False)and(keys[pygame.K_d] == False))):
+    if(((keys[pygame.K_a]) and (keys[pygame.K_d])) or 
+            ((keys[pygame.K_a] == False) and (keys[pygame.K_d] == False))):
         linkXY[2] = 0
 
     sprites(link,moveme(linkXY))
@@ -489,16 +492,17 @@ while(True):
     chests(chest,chestXY,sword,swordXY,link,linkXY)
     bushes(bush,bushXY,linkXY)
 
-    blit(bush,bushXY)
-    blit(link,linkXY)
-    blit(lsoldier,lsoldierXY)
-    blit(tree,treeXY)
-    blit(chest,chestXY)
+    sblit(bush,bushXY)
+    sblit(link,linkXY)
+    sblit(lsoldier,lsoldierXY)
+    sblit(tree,treeXY)
+    sblit(chest,chestXY)
     layer(link,linkXY,tree,treeXY)
     layer(link,linkXY,chest,chestXY)
     layer(link,linkXY,bush,bushXY,bush.r)
     pickup(fftyrupees,fftyrupeesXY)
+    screen.blit(text_rupees,(0,608))
 
     pygame.display.update([link.rect, tree.rect, chest.rect, sword.rect,
-                           bush.rect, fftyrupees.rect, lsoldier.rect])
+        bush.rect, fftyrupees.rect, lsoldier.rect, pygame.Rect(0,608,1138,32)])
     pygame.time.wait(20)
