@@ -4,6 +4,8 @@ from os import system
 from random import randint
 from sys import exit
 
+import pygame
+
 
 def num(d):
     global n
@@ -90,31 +92,58 @@ def generateSIN():
     print 'New Social Insurance Number: "' + r + '"'
     h.append(r + ", Generated")
 
-
 h = []
+pygame.init()
+pygame.display.set_caption("Credit Card Number & SIN Validation")
+screen = pygame.display.set_mode((427,240))
+screen.fill((255,255,255))
+pygame.display.update()
 
 while True:
+    event = pygame.event.poll()
+    keys = pygame.key.get_pressed()
+    pos = pygame.mouse.get_pos()
+    prs = pygame.mouse.get_pressed()[0]
+    menu_1 = pygame.Rect(0,0,427,40)
+    menu_2 = pygame.Rect(0,40,427,80)
+    menu_3 = pygame.Rect(0,80,427,40)
+    menu_4 = pygame.Rect(0,120,427,40)
+    menu_5 = pygame.Rect(0,160,427,40)
+    menu_6 = pygame.Rect(0,200,427,40)
+    pygame.draw.rect(screen,(255,0,0),menu_1)
+    pygame.draw.rect(screen,(255,200,200),menu_2)
+    pygame.draw.rect(screen,(255,0,0),menu_3)
+    pygame.draw.rect(screen,(255,200,200),menu_4)
+    pygame.draw.rect(screen,(255,0,0),menu_5)
+    pygame.draw.rect(screen,(255,200,200),menu_6)
+    pygame.display.update()
+    
+    if(event.type == pygame.QUIT)or(keys[pygame.K_ESCAPE]):
+        exit()
+    
     print ("\n1. Check A Credit Card Number\n2. Check A Social Insurance Num" +
         "ber\n3. Generate A Credit Card Number\n4. Generate A Social Insuran" +
         "ce Number\n5. View History\n6. Exit\n")
-    menu = raw_input(">")
+    print pos
+    menu = ""
     system("cls")
     
-    if menu == "1":
-        num(16)
-        ccn()
-    elif menu == "2":
-        num(9)
-        sin()
-    elif menu == "3":
-        generateCCN()
-    elif menu == "4":
-        generateSIN()
-    elif menu == "5":
-        print "[HISTORY]"
-        
-        for l in range(0, len(h)):
-            print str(l+1) + ". " + h[l] + "\n"
-        
-    elif menu == "6":
-        exit()
+    if prs:
+        if menu_1.collidepoint(pos):
+            num(16)
+            ccn()
+        elif menu_2.collidepoint(pos):
+            num(9)
+            sin()
+        elif menu_3.collidepoint(pos):
+            generateCCN()
+        elif menu_4.collidepoint(pos):
+            generateSIN()
+        elif menu_5.collidepoint(pos):
+            print "[HISTORY]"
+            
+            for l in range(0, len(h)):
+                print str(l+1) + ". " + h[l] + "\n"
+            
+        elif menu_6.collidepoint(pos):
+            exit()
