@@ -19,8 +19,13 @@ def num(d):
                 exit()
             
             if (event.type==pygame.KEYDOWN):
-                if len(pygame.key.name(event.key)) == 1 and pygame.key.name(event.key).isdigit():
+                if(len(pygame.key.name(event.key)) == 1 and
+                        pygame.key.name(event.key).isdigit()):
                     n = n + pygame.key.name(event.key)
+                elif(pygame.key.name(event.key)[0] == "[" and
+                        pygame.key.name(event.key)[2] == "]" and
+                        pygame.key.name(event.key)[1].isdigit()):
+                    n = n + pygame.key.name(event.key)[1]
                 elif pygame.key.name(event.key) == "backspace":
                     n = n[:len(n) - 1]
                 text_n = font.render(">" + n + ("_" * (d - len(n))) + "<",
@@ -95,7 +100,8 @@ def generateCCN():
         keys = pygame.key.get_pressed()
         prs = pygame.mouse.get_pressed()[0]
         pos = pygame.mouse.get_pos()
-        r = str(randint(100000000000000,999999999999999))
+        r = str(randint(0,999999999999999))
+        r = (15 - len(r)) * "0" + r
         text_r = font.render(r, True, (0,0,0))
         screen.fill((255,255,255))
         screen.blit(text_generate,(0,0))
@@ -161,7 +167,8 @@ def generateSIN():
         pos = pygame.mouse.get_pos()
         
         while True:
-            r = str(randint(100000000,999999999))
+            r = str(randint(0,999999999))
+            r = (9 - len(r)) * "0" + r
             a = list(r)
             t = 0
             
