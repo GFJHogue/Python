@@ -70,18 +70,21 @@ def validate(a,m,c):
         text_valid = font.render('This Number is NOT Valid.', True, (0,0,0))
         pygame.draw.rect(screen,(255,0,0),menu_4)
     
-    screen.blit(text_valid,(0,120))
-    pygame.draw.rect(screen,(255,200,200),menu_6)
-    screen.blit(text_prompt,(0,200))
-    pygame.display.update()
-    
     while True:
         event = pygame.event.poll()
         keys = pygame.key.get_pressed()
         prs = pygame.mouse.get_pressed()[0]
         pos = pygame.mouse.get_pos()
+        screen.blit(text_valid,(0,120))
+        pygame.draw.rect(screen,(255,200,200),menu_6)
         
-        if(event.type == pygame.QUIT)or(keys[pygame.K_ESCAPE]):
+        if menu_6.collidepoint(pos):
+            pygame.draw.rect(screen,(255,100,100),menu_6)
+        
+        screen.blit(text_prompt,(0,200))
+        pygame.display.update()
+        
+        if event.type == pygame.QUIT or keys[pygame.K_ESCAPE]:
             exit()
         
         if prs and menu_6.collidepoint(pos):
@@ -145,6 +148,14 @@ def generateCCN():
         keys = pygame.key.get_pressed()
         prs = pygame.mouse.get_pressed()[0]
         pos = pygame.mouse.get_pos()
+        screen.blit(text_r,(0,120))
+        pygame.draw.rect(screen,(255,200,200),menu_6)
+        
+        if menu_6.collidepoint(pos):
+            pygame.draw.rect(screen,(255,100,100),menu_6)
+        
+        screen.blit(text_prompt,(0,200))
+        pygame.display.update()
         
         if(event.type == pygame.QUIT)or(keys[pygame.K_ESCAPE]):
             exit()
@@ -197,6 +208,7 @@ def generateSIN():
             pygame.time.wait(1000)
             break
     
+    text_r = font.render(r, True, (0,0,0))
     screen.blit(text_info,(0,80))
     pygame.draw.rect(screen,(0,255,0),menu_4)
     screen.blit(text_r,(0,120))
@@ -209,6 +221,14 @@ def generateSIN():
         keys = pygame.key.get_pressed()
         prs = pygame.mouse.get_pressed()[0]
         pos = pygame.mouse.get_pos()
+        screen.blit(text_r,(0,120))
+        pygame.draw.rect(screen,(255,200,200),menu_6)
+        
+        if menu_6.collidepoint(pos):
+            pygame.draw.rect(screen,(255,100,100),menu_6)
+        
+        screen.blit(text_prompt,(0,200))
+        pygame.display.update()
         
         if(event.type == pygame.QUIT)or(keys[pygame.K_ESCAPE]):
             exit()
@@ -244,6 +264,18 @@ while True:
     pygame.draw.rect(screen,(200,200,200),menu_4)
     pygame.draw.rect(screen,(255,255,255),menu_5)
     pygame.draw.rect(screen,(255,100,100),menu_6)
+    
+    if menu_1.collidepoint(pos):
+        pygame.draw.rect(screen,(125,125,225),menu_1)
+    elif menu_2.collidepoint(pos):
+        pygame.draw.rect(screen,(125,125,225),menu_2)
+    elif menu_3.collidepoint(pos):
+        pygame.draw.rect(screen,(125,125,225),menu_3)
+    elif menu_4.collidepoint(pos):
+        pygame.draw.rect(screen,(125,125,225),menu_4)
+    elif menu_6.collidepoint(pos):
+        pygame.draw.rect(screen,(255,50,50),menu_6)
+    
     screen.blit(text_menu1,(0,0))
     screen.blit(text_menu2,(0,40))
     screen.blit(text_menu3,(0,80))
