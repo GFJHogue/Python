@@ -189,9 +189,13 @@ lsoldier = pygame.sprite.Sprite()
 lsoldier.images = [["","",[],"",[],"",[],"",[],""],
     ["","",[],"",[],"",[],"",[],""]]
 lsoldier.images[0][2].append(pygame.image.load("textures/entities/lSoldierD.png"))
+lsoldier.images[0][2].append(pygame.image.load("textures/entities/lSoldierD1.png"))
 lsoldier.images[0][4].append(pygame.image.load("textures/entities/lSoldierL.png"))
+lsoldier.images[0][4].append(pygame.image.load("textures/entities/lSoldierL1.png"))
 lsoldier.images[0][6].append(pygame.image.load("textures/entities/lSoldierR.png"))
+lsoldier.images[0][6].append(pygame.image.load("textures/entities/lSoldierR1.png"))
 lsoldier.images[0][8].append(pygame.image.load("textures/entities/lSoldierU.png"))
+lsoldier.images[0][8].append(pygame.image.load("textures/entities/lSoldierU1.png"))
 lsoldier.frame = 0
 lsoldier.prev = (0,0)
 lsoldier.agro = False
@@ -307,7 +311,7 @@ def sprites(s,c):#len(c) >= 9
         s.image = s.images[c[8]][c[7]][0]
     else:
         s.frame = s.frame + 0.33
-        if(s.frame > len(s.images[c[8]][c[7]]) - 1):
+        if(s.frame > len(s.images[c[8]][c[7]])):
             s.frame = 0
         s.image = s.images[c[8]][c[7]][int(s.frame)]
     return
@@ -449,10 +453,14 @@ def npc(s,c,e):
     if coords(c) == s.prev or randint(0,49) == 0:
         c[7] = randint(1,4) * 2
     
-    if(e == True and ((c[7] == 2 and c[0] - c[4] <= linkXY[0] <= c[0] + c[4] and c[1] < linkXY[1] < c[1] + (8 * c[5])) or
-            (c[7] == 4 and c[1] - c[5] <= linkXY[1] <= c[1] + c[5] and c[0] > linkXY[0] > c[0] - (8 * c[4])) or
-            (c[7] == 6 and c[1] - c[5] <= linkXY[1] <= c[1] + c[5] and c[0] < linkXY[0] < c[0] + (8 * c[4])) or
-            (c[7] == 8 and c[0] - c[4] <= linkXY[0] <= c[0] + c[4] and c[1] > linkXY[1] > c[1] - (8 * c[5])))):
+    if(e == True and ((c[7] == 2 and c[0] - c[4] <= linkXY[0] <= c[0] + c[4]
+            and c[1] < linkXY[1] < c[1] + (5 * c[5])) or
+            (c[7] == 4 and c[1] - c[5] <= linkXY[1] <= c[1] + c[5]
+            and c[0] > linkXY[0] > c[0] - (5 * c[4])) or
+            (c[7] == 6 and c[1] - c[5] <= linkXY[1] <= c[1] + c[5]
+            and c[0] < linkXY[0] < c[0] + (5 * c[4])) or
+            (c[7] == 8 and c[0] - c[4] <= linkXY[0] <= c[0] + c[4]
+            and c[1] > linkXY[1] > c[1] - (5 * c[5])))):
         s.agro = True
     else:
         if c[7] == 2:
@@ -482,7 +490,6 @@ def npc(s,c,e):
             c[3] = -2
         else:
             c[3] = 0
-    return
     
     s.prev = (c[0],c[1])
 
