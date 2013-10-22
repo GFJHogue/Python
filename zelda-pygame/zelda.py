@@ -13,7 +13,7 @@ text_intro0 = font.render("The Legend of Zelda:",True,(255,0,0),(74,156,74))
 text_intro1 = font.render("A Link To The Python",True,
                           (255,255,128),(74,156,74))
 screen.fill((74,156,74))
-screen.blit(text_intro0,(100,200))
+screen.blit(text_intro0,(50,200))
 screen.blit(text_intro1,(400,340))
 pygame.display.flip()
 pygame.time.wait(3000)
@@ -193,6 +193,8 @@ lsoldier.images[0][4].append(pygame.image.load("textures/entities/lSoldierL.png"
 lsoldier.images[0][6].append(pygame.image.load("textures/entities/lSoldierR.png"))
 lsoldier.images[0][8].append(pygame.image.load("textures/entities/lSoldierU.png"))
 lsoldier.frame = 0
+lsoldier.prev = (0,0)
+lsoldier.agro = False
 lsoldier.image = lsoldier.images[0][4][0]
 lsoldier.rect = link.image.get_rect()
 lsoldierXY = [1000,400,0,0,72,72,4,4,0]
@@ -443,6 +445,47 @@ def pickup(i,ixy):#len(ixy) >= 9
             text_rupees = font.render(str(rupees),True,(0,255,0))
     return
 
+def npc(s,c,e):
+    if coords(c) == s.prev or randint(0,49) == 0:
+        c[7] = randint(1,4) * 2
+    
+    if(e == True and ((c[7] == 2 and c[0] - c[4] <= linkXY[0] <= c[0] + c[4] and c[1] < linkXY[1] < c[1] + (8 * c[5])) or
+            (c[7] == 4 and c[1] - c[5] <= linkXY[1] <= c[1] + c[5] and c[0] > linkXY[0] > c[0] - (8 * c[4])) or
+            (c[7] == 6 and c[1] - c[5] <= linkXY[1] <= c[1] + c[5] and c[0] < linkXY[0] < c[0] + (8 * c[4])) or
+            (c[7] == 8 and c[0] - c[4] <= linkXY[0] <= c[0] + c[4] and c[1] > linkXY[1] > c[1] - (8 * c[5])))):
+        s.agro = True
+    else:
+        if c[7] == 2:
+            c[2] = 0
+            c[3] = 2
+        elif c[7] == 4:
+            c[3] = 0
+            c[2] = -2
+        elif c[7] == 6:
+            c[3] = 0
+            c[2] = 2
+        elif c[7] == 8:
+            c[2] = 0
+            c[3] = -2
+    
+    if s.agro == True:
+        if c[0] < linkXY[0]:
+            c[2] = 2
+        elif c[0] > linkXY[0]:
+            c[2] = -2
+        else:
+            c[2] = 0
+        
+        if c[1] < linkXY[1]:
+            c[3] = 2
+        elif c[1] > linkXY[1]:
+            c[3] = -2
+        else:
+            c[3] = 0
+    return
+    
+    s.prev = (c[0],c[1])
+
 
 screen.fill((74,156,74))
 pygame.display.update()
@@ -477,8 +520,9 @@ while True:
             ((keys[pygame.K_a] == False) and (keys[pygame.K_d] == False))):
         linkXY[2] = 0
 
+    npc(lsoldier,lsoldierXY,True)
     sprites(link,moveme(linkXY))
-    moveme(lsoldierXY)
+    sprites(lsoldier,moveme(lsoldierXY))
     swing([bush],[bushXY])
 
     screen.fill((74,156,74))
@@ -501,8 +545,8 @@ while True:
     layer(link,linkXY,chest,chestXY)
     layer(link,linkXY,bush,bushXY,bush.r)
     pickup(fftyrupees,fftyrupeesXY)
-    screen.blit(text_rupees,(0,608))
+    screen.blit(text_rupees,(1099,0))
 
     pygame.display.update([link.rect, tree.rect, chest.rect, sword.rect,
-        bush.rect, fftyrupees.rect, lsoldier.rect, pygame.Rect(0,608,1138,32)])
+        bush.rect, fftyrupees.rect, lsoldier.rect, pygame.Rect(0,0,1138,32)])
     pygame.time.wait(20)
