@@ -21,7 +21,7 @@ pygame.time.wait(3000)
 font = pygame.font.Font(None,32)
 rupees = 0
 text_rupees = font.render(str(rupees),True,(0,255,0))
-lives = 0
+lives = 10
 
 
 #entities
@@ -238,6 +238,16 @@ fftyrupees.rect = fftyrupees.image.get_rect()
 fftyrupeesXY = [0,0,0,0,72,72,1,2,0]
 fftyrupees.value = 50
 
+#HUD
+heart = pygame.sprite.Sprite()
+heart.images = []
+heart.images.append(pygame.image.load("textures/items/heart.png"))
+heart.images.append(pygame.image.load("textures/items/heart1.png"))
+heart.images.append(pygame.image.load("textures/items/heart2.png"))
+heart.image = heart.images[0]
+heart.rect = heart.image.get_rect()
+heartXY = [0,0,0,0,14,14,1,2,0]
+
 #music
 pygame.mixer.music.load("audio/music/overworld.ogg")
 
@@ -450,6 +460,8 @@ def pickup(i,ixy):#len(ixy) >= 9
     return
 
 def npc(s,c,e):
+    global lives
+    
     if coords(c) == s.prev or randint(0,49) == 0:
         c[7] = randint(1,4) * 2
     
@@ -490,8 +502,27 @@ def npc(s,c,e):
             c[3] = -2
         else:
             c[3] = 0
-    
+        
+        if(s.rect.inflate(-72,-72).colliderect(link.rect) and
+                (((c[7] == 2) and (c[1] < linkXY[1])) or 
+                ((c[7] == 4) and (c[0] > linkXY[0])) or 
+                ((c[7] == 6) and (c[0] < linkXY[0])) or 
+                ((c[7] == 8) and (c[1] > linkXY[1])))):
+            lives = lives - 1
+            linkXY[0] = 0
+            linkXY[1] = 0
     s.prev = (c[0],c[1])
+    return
+
+def hearts(l,t):
+    for c in range(1,t+2):
+        if c < l + 1:
+            if c % 2 == 1:
+                screen.blit(heart.images[1],((c + 1) * 8,5))
+            elif c % 2 == 0:
+                screen.blit(heart.images[0],(c * 8,5))
+        elif c != l + 1 and c % 2 == 0:
+            screen.blit(heart.images[2],(c * 8,5))
 
 
 screen.fill((74,156,74))
@@ -554,6 +585,7 @@ while True:
     pickup(fftyrupees,fftyrupeesXY)
     screen.blit(text_rupees,(1099,0))
 
+    hearts(lives,10)
     pygame.display.update([link.rect, tree.rect, chest.rect, sword.rect,
         bush.rect, fftyrupees.rect, lsoldier.rect, pygame.Rect(0,0,1138,32)])
     pygame.time.wait(20)
