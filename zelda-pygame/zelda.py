@@ -460,8 +460,6 @@ def pickup(i,ixy):#len(ixy) >= 9
     return
 
 def npc(s,c,e):
-    global lives
-    
     if coords(c) == s.prev or randint(0,49) == 0:
         c[7] = randint(1,4) * 2
     
@@ -508,11 +506,47 @@ def npc(s,c,e):
                 ((c[7] == 4) and (c[0] > linkXY[0])) or 
                 ((c[7] == 6) and (c[0] < linkXY[0])) or 
                 ((c[7] == 8) and (c[1] > linkXY[1])))):
-            lives = lives - 1
-            linkXY[0] = 0
-            linkXY[1] = 0
+            damaged(1,link,linkXY)
     s.prev = (c[0],c[1])
     return
+
+def damaged(a,s,c):
+    global lives
+    
+    if s == link:
+        lives = lives - 1
+        prev = c[8]
+        c[8] = 2
+    else:
+        s.health = s.health - 1
+    
+    for d in range(0,18):
+        sprites(s,c)
+        
+        if 1 <= c[7] <= 3:
+            c[1] = c[1] - 6
+        elif 7 <= c[7] <= 9:
+            c[1] = c[1] + 6
+        elif c[7] == 4:
+            c[0] = c[0] + 6
+        elif c[7] == 6:
+            c[0] = c[0] -6
+            screen.fill((74,156,74))
+        
+        sblit(bush,bushXY)
+        sblit(link,linkXY)
+        sblit(tree,treeXY)
+        sblit(chest,chestXY)
+        layer(link,linkXY,tree,treeXY)
+        layer(link,linkXY,chest,chestXY)
+        layer(link,linkXY,bush,bushXY,bush.r)
+        pygame.display.update([s.rect])
+        pygame.time.wait(20)
+    
+    if lives <= 0:
+        exit()
+    
+    c[8] = prev
 
 def hearts(l,t):
     for c in range(1,t+2):
