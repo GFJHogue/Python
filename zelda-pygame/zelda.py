@@ -197,6 +197,7 @@ lsoldier.images[0][6].append(pygame.image.load("textures/entities/lSoldierR1.png
 lsoldier.images[0][8].append(pygame.image.load("textures/entities/lSoldierU.png"))
 lsoldier.images[0][8].append(pygame.image.load("textures/entities/lSoldierU1.png"))
 lsoldier.frame = 0
+lsoldier.health = 3
 lsoldier.prev = (0,0)
 lsoldier.agro = False
 lsoldier.image = lsoldier.images[0][4][0]
@@ -371,12 +372,15 @@ def swing(e = [],exy = []):#len(e) == len(exy)
             linkXY[1] = linkXY[1] + 14
         
         if(link.rect.collidelistall(rectlist(e))):
-            en = link.rect.collidelistall(rectlist(e))[0]
+            en = link.rect.inflate(20,20).collidelistall(rectlist(e))[0]
             if(((linkXY[7] == 2) and (linkXY[1] < exy[en][1])) or 
                     ((linkXY[7] == 4) and (linkXY[0] > exy[en][0])) or 
                     ((linkXY[7] == 6) and (linkXY[0] < exy[en][0])) or 
                     ((linkXY[7] == 8) and (linkXY[1] > exy[en][1]))):
                 e[en].damage = 1
+                
+                if e[en] == link or e[en] == lsoldier:
+                    damaged(1,e[en],exy[en])
         
         sprites(link,linkXY)
         screen.fill((74,156,74))
@@ -515,12 +519,14 @@ def damaged(a,s,c):
     
     if s == link:
         lives = lives - 1
-        prev = c[8]
         c[8] = 2
     else:
         s.health = s.health - 1
     
-    for d in range(0,18):
+    prev = c[8]
+    
+    for d in range(0,9):
+        s.frame = 0
         sprites(s,c)
         
         if 1 <= c[7] <= 3:
@@ -530,13 +536,14 @@ def damaged(a,s,c):
         elif c[7] == 4:
             c[0] = c[0] + 6
         elif c[7] == 6:
-            c[0] = c[0] -6
-            screen.fill((74,156,74))
+            c[0] = c[0] - 6
         
+        screen.fill((74,156,74))
         sblit(bush,bushXY)
         sblit(link,linkXY)
         sblit(tree,treeXY)
         sblit(chest,chestXY)
+        sblit(lsoldier,lsoldierXY)
         layer(link,linkXY,tree,treeXY)
         layer(link,linkXY,chest,chestXY)
         layer(link,linkXY,bush,bushXY,bush.r)
@@ -546,7 +553,8 @@ def damaged(a,s,c):
     if lives <= 0:
         exit()
     
-    c[8] = prev
+    if s == link:
+        c[8] = 1
 
 def hearts(l,t):
     for c in range(1,t+2):
@@ -595,7 +603,7 @@ while True:
     npc(lsoldier,lsoldierXY,True)
     sprites(link,moveme(linkXY))
     sprites(lsoldier,moveme(lsoldierXY))
-    swing([bush],[bushXY])
+    swing([bush,lsoldier],[bushXY,lsoldierXY])
 
     screen.fill((74,156,74))
 
