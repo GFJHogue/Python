@@ -5,10 +5,10 @@ from sys import exit
 f = [[],[],[]]
 
 while True:
-    while len(f[1]) < len(f[0]):
+    while len(f[1]) <= len(f[0]):
         f[1].append("")
     
-    while len(f[2]) < len(f[0]):
+    while len(f[2]) <= len(f[0]):
         f[2].append("")
     
     if len(f[0]) == 0:
@@ -59,11 +59,18 @@ while True:
         f[1].insert(i,"")
         f[2].insert(i,"")
     elif menu == "5":
-        f[0].sort()
         s = []
+        
         for c in range(0,len(f[0])):
-            s[c] = f[0] + ":" + f[1] + ":" + f[2]
+            s.append([f[0][c],f[1][c],f[2][c]])
+        
         s.sort()
+        
+        for c in range(0,len(s)):
+            f[0][c] = s[c][0]
+            f[1][c] = s[c][1]
+            f[2][c] = s[c][2]
+        
     elif menu == "6":
         while True:
             n = raw_input("\nEnter Name of Friend: ")
