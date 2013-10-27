@@ -259,6 +259,10 @@ sound_sword.append(pygame.mixer.Sound("audio/sounds/sword2.ogg"))
 sound_sword.append(pygame.mixer.Sound("audio/sounds/sword3.ogg"))
 sound_sword.append(pygame.mixer.Sound("audio/sounds/sword4.ogg"))
 
+#sound_hit = pygame.mixer.Sound("audio/sounds/hit.ogg")
+
+#sound_kill = pygame.mixer.Sound("audio/sounds/kill.ogg")
+
 sound_itemfanfare = pygame.mixer.Sound("audio/sounds/itemfanfare.ogg")
 
 sound_grasscut = pygame.mixer.Sound("audio/sounds/grasscut.ogg")
@@ -599,10 +603,11 @@ while True:
     if(((keys[pygame.K_a]) and (keys[pygame.K_d])) or 
             ((keys[pygame.K_a] == False) and (keys[pygame.K_d] == False))):
         linkXY[2] = 0
-
-    npc(lsoldier,lsoldierXY,True)
+    
+    if lsoldier.health > 0:
+        npc(lsoldier,lsoldierXY,True)
+        sprites(lsoldier,moveme(lsoldierXY))
     sprites(link,moveme(linkXY))
-    sprites(lsoldier,moveme(lsoldierXY))
     swing([bush,lsoldier],[bushXY,lsoldierXY])
 
     screen.fill((74,156,74))
@@ -618,7 +623,8 @@ while True:
 
     sblit(bush,bushXY)
     sblit(link,linkXY)
-    sblit(lsoldier,lsoldierXY)
+    if lsoldier.health > 0:
+        sblit(lsoldier,lsoldierXY)
     sblit(tree,treeXY)
     sblit(chest,chestXY)
     layer(link,linkXY,tree,treeXY)
