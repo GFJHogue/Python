@@ -272,6 +272,37 @@ sound_rupee.append(pygame.mixer.Sound("audio/sounds/rupee1.ogg"))
 sound_rupee.append(pygame.mixer.Sound("audio/sounds/rupee2.ogg"))
 
 
+def room00():
+    global rects
+    if lsoldier.health > 0:
+        npc(lsoldier,lsoldierXY,True)
+        sprites(lsoldier,moveme(lsoldierXY))
+    sprites(link,moveme(linkXY))
+    swing([bush,lsoldier],[bushXY,lsoldierXY])
+    
+    solidobject(linkXY,treeXY,33,45)
+    solidobject(linkXY,chestXY,24,24)
+    solidobject(lsoldierXY,treeXY,33,45)
+    solidobject(lsoldierXY,chestXY,24,24)
+    solidobject(lsoldierXY,linkXY,40,40)
+
+    chests(chest,chestXY,sword,swordXY,link,linkXY)
+    bushes(bush,bushXY,linkXY)
+
+    sblit(bush,bushXY)
+    sblit(link,linkXY)
+    if lsoldier.health > 0:
+        sblit(lsoldier,lsoldierXY)
+    sblit(tree,treeXY)
+    sblit(chest,chestXY)
+    layer(link,linkXY,tree,treeXY)
+    layer(link,linkXY,chest,chestXY)
+    layer(link,linkXY,bush,bushXY,bush.r)
+    pickup(fftyrupees,fftyrupeesXY)
+    rects = [link.rect, tree.rect, chest.rect, sword.rect, bush.rect,
+        fftyrupees.rect, lsoldier.rect, pygame.Rect(0,0,1138,32)]
+    return
+
 def coords(s):#len(s) >= 2
     return((s[0],s[1]))#(x,y)
 
@@ -604,36 +635,10 @@ while True:
             ((keys[pygame.K_a] == False) and (keys[pygame.K_d] == False))):
         linkXY[2] = 0
     
-    if lsoldier.health > 0:
-        npc(lsoldier,lsoldierXY,True)
-        sprites(lsoldier,moveme(lsoldierXY))
-    sprites(link,moveme(linkXY))
-    swing([bush,lsoldier],[bushXY,lsoldierXY])
-
     screen.fill((74,156,74))
-
-    solidobject(linkXY,treeXY,33,45)
-    solidobject(linkXY,chestXY,24,24)
-    solidobject(lsoldierXY,treeXY,33,45)
-    solidobject(lsoldierXY,chestXY,24,24)
-    solidobject(lsoldierXY,linkXY,40,40)
-
-    chests(chest,chestXY,sword,swordXY,link,linkXY)
-    bushes(bush,bushXY,linkXY)
-
-    sblit(bush,bushXY)
-    sblit(link,linkXY)
-    if lsoldier.health > 0:
-        sblit(lsoldier,lsoldierXY)
-    sblit(tree,treeXY)
-    sblit(chest,chestXY)
-    layer(link,linkXY,tree,treeXY)
-    layer(link,linkXY,chest,chestXY)
-    layer(link,linkXY,bush,bushXY,bush.r)
-    pickup(fftyrupees,fftyrupeesXY)
+    room00()
     screen.blit(text_rupees,(1099,0))
-
+    
     hearts(lives,10)
-    pygame.display.update([link.rect, tree.rect, chest.rect, sword.rect,
-        bush.rect, fftyrupees.rect, lsoldier.rect, pygame.Rect(0,0,1138,32)])
+    pygame.display.update(rects)
     pygame.time.wait(20)
