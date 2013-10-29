@@ -274,34 +274,42 @@ sound_rupee.append(pygame.mixer.Sound("audio/sounds/rupee2.ogg"))
 
 def room00():
     global rects
-    if lsoldier.health > 0:
-        npc(lsoldier,lsoldierXY,True)
-        sprites(lsoldier,moveme(lsoldierXY))
-    sprites(link,moveme(linkXY))
-    swing([bush,lsoldier],[bushXY,lsoldierXY])
     
+    if lsoldier.health > 0:
+        npc(lsoldier,lsoldierXY,True,"00")
+        sprites(lsoldier,moveme(lsoldierXY))
+    
+    sprites(link,moveme(linkXY))
+    swing("00",[bush,lsoldier],[bushXY,lsoldierXY])
+    chests(chest,chestXY,sword,swordXY,link,linkXY)
+    bushes(bush,bushXY,linkXY)
+    pickup(fftyrupees,fftyrupeesXY)
+    room00F()
+
+def room00F():
+    global rects
     solidobject(linkXY,treeXY,33,45)
     solidobject(linkXY,chestXY,24,24)
     solidobject(lsoldierXY,treeXY,33,45)
     solidobject(lsoldierXY,chestXY,24,24)
     solidobject(lsoldierXY,linkXY,40,40)
-
-    chests(chest,chestXY,sword,swordXY,link,linkXY)
-    bushes(bush,bushXY,linkXY)
-
     sblit(bush,bushXY)
     sblit(link,linkXY)
+    
     if lsoldier.health > 0:
         sblit(lsoldier,lsoldierXY)
+    
     sblit(tree,treeXY)
     sblit(chest,chestXY)
     layer(link,linkXY,tree,treeXY)
     layer(link,linkXY,chest,chestXY)
     layer(link,linkXY,bush,bushXY,bush.r)
-    pickup(fftyrupees,fftyrupeesXY)
     rects = [link.rect, tree.rect, chest.rect, sword.rect, bush.rect,
         fftyrupees.rect, lsoldier.rect, pygame.Rect(0,0,1138,32)]
-    return
+
+def rooms(r):
+    if r == "00":
+        room00F()
 
 def coords(s):#len(s) >= 2
     return((s[0],s[1]))#(x,y)
@@ -360,9 +368,8 @@ def sprites(s,c):#len(c) >= 9
         if(s.frame > len(s.images[c[8]][c[7]])):
             s.frame = 0
         s.image = s.images[c[8]][c[7]][int(s.frame)]
-    return
 
-def swing(e = [],exy = []):#len(e) == len(exy)
+def swing(r,e = [],exy = []):#len(e) == len(exy)
     if(keys[pygame.K_SPACE]) and (linkXY[8] == 1):
         sound_sword[randint(0,3)].play()
         div = 1
@@ -383,13 +390,7 @@ def swing(e = [],exy = []):#len(e) == len(exy)
         for frame in range(0,9):
             link.image = link.images[4][linkXY[7]][int(frame / div)]
             screen.fill((74,156,74))
-            sblit(bush,bushXY)
-            sblit(link,linkXY)
-            sblit(tree,treeXY)
-            sblit(chest,chestXY)
-            layer(link,linkXY,tree,treeXY)
-            layer(link,linkXY,chest,chestXY)
-            layer(link,linkXY,bush,bushXY,bush.r)
+            rooms(r)
             pygame.display.update([link.rect])
             pygame.time.wait(20)
         
@@ -415,7 +416,7 @@ def swing(e = [],exy = []):#len(e) == len(exy)
                 e[en].damage = 1
                 
                 if e[en] == link or e[en] == lsoldier:
-                    damaged(1,e[en],exy[en])
+                    damaged(1,e[en],exy[en],linkXY,"00")
         
         sprites(link,linkXY)
         screen.fill((74,156,74))
@@ -427,14 +428,12 @@ def swing(e = [],exy = []):#len(e) == len(exy)
         layer(link,linkXY,chest,chestXY)
         layer(link,linkXY,bush,bushXY,bush.r)
         pygame.display.update()
-        return
 
 def solidobject(c,o,h,v):#len(c) >= 6,len(o) >= 6
     if((c[0] + c[4] - h > o[0]) and (c[0] + h < o[0] + o[4]) and 
             (c[1] + c[5] - v > o[1]) and (c[1] + v < o[1] + o[5])):
         c[0] = c[0] - c[2]
         c[1] = c[1] - c[3]
-    return
 
 def layer(a,axy,b,bxy,r = True):#len(axy) >= 6, len(bxy) >= 6
     if(pygame.sprite.collide_rect(a,b)) and (r == True):
@@ -444,7 +443,6 @@ def layer(a,axy,b,bxy,r = True):#len(axy) >= 6, len(bxy) >= 6
         else:
             sblit(a,axy)
             sblit(b,bxy)
-    return
 
 def chests(c,cxy,i,ixy,s,sxy):
     if((keys[pygame.K_e]) and (pygame.sprite.collide_rect(s,c)) and 
@@ -466,7 +464,6 @@ def chests(c,cxy,i,ixy,s,sxy):
         pygame.time.wait(1020)
         pygame.mixer.music.unpause()
         screen.fill((74,156,74))
-    return
 
 def bushes(b,bxy,sxy):
     if(b.damage == 1) and (b.image == b.images[0]):
@@ -478,14 +475,12 @@ def bushes(b,bxy,sxy):
     if(b.image == b.images[0]):
         solidobject(sxy,bxy,24,20)
         b.r = True
-    return
 
 def drop(lxy,t):
     if(t == 0):
         fftyrupeesXY[0] = lxy[0]
         fftyrupeesXY[1] = lxy[1]
         fftyrupeesXY[8] = 1
-    return
 
 def pickup(i,ixy):#len(ixy) >= 9
     global rupees,text_rupees
@@ -496,9 +491,8 @@ def pickup(i,ixy):#len(ixy) >= 9
             ixy[8] = 0
             rupees = rupees + i.value
             text_rupees = font.render(str(rupees),True,(0,255,0))
-    return
 
-def npc(s,c,e):
+def npc(s,c,e,r):
     if coords(c) == s.prev or randint(0,49) == 0:
         c[7] = randint(1,4) * 2
     
@@ -545,43 +539,41 @@ def npc(s,c,e):
                 ((c[7] == 4) and (c[0] > linkXY[0])) or 
                 ((c[7] == 6) and (c[0] < linkXY[0])) or 
                 ((c[7] == 8) and (c[1] > linkXY[1])))):
-            damaged(1,link,linkXY)
+            damaged(1,link,linkXY,c,r)
     s.prev = (c[0],c[1])
-    return
 
-def damaged(a,s,c):
+def damaged(a,s,c,g,r):
     global lives
+    prev = c[8]
     
     if s == link:
-        lives = lives - 1
+        lives = lives - a
         c[8] = 2
+        c[6] = 4
+        
+        if 1 <= c[7] <= 3:
+            c[7] = 2
+        elif 7 <= c[7] <= 9:
+            c[7] = 8
     else:
-        s.health = s.health - 1
-    
-    prev = c[8]
+        s.health = s.health - a
     
     for d in range(0,9):
         s.frame = 0
         sprites(s,c)
         
-        if 1 <= c[7] <= 3:
+        if c[1] < g[1]:
             c[1] = c[1] - 6
-        elif 7 <= c[7] <= 9:
+        elif c[1] > g[1]:
             c[1] = c[1] + 6
-        elif c[7] == 4:
+        elif c[0] > g[0]:
             c[0] = c[0] + 6
-        elif c[7] == 6:
+        elif c[0] < g[0]:
             c[0] = c[0] - 6
         
+        moveme(c)
         screen.fill((74,156,74))
-        sblit(bush,bushXY)
-        sblit(link,linkXY)
-        sblit(tree,treeXY)
-        sblit(chest,chestXY)
-        sblit(lsoldier,lsoldierXY)
-        layer(link,linkXY,tree,treeXY)
-        layer(link,linkXY,chest,chestXY)
-        layer(link,linkXY,bush,bushXY,bush.r)
+        rooms(r)
         pygame.display.update([s.rect])
         pygame.time.wait(20)
     
@@ -589,7 +581,7 @@ def damaged(a,s,c):
         exit()
     
     if s == link:
-        c[8] = 1
+        c[8] = prev
 
 def hearts(l,t):
     for c in range(1,t+2):
