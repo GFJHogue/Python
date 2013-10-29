@@ -16,10 +16,17 @@ while True:
     else:
         print "[Friends]"
     
+    w = "[FRIENDS]\n"
+    
     for c in range(0,len(f[0])):
         print(str(c + 1) + ". " + f[0][c] +
             (" | Phone #: " + f[1][c]) * (len(f[1][c]) > 0) +
             (" | Email: " + f[2][c]) * (len(f[2][c]) > 0))
+        w = w + "\n\n" + f[0][c] + "\n\t" + f[1][c] + "\n\t" + f[2][c]
+    
+    file = open("friends.txt","w")
+    file.write(w)
+    file.close()
     
     menu = raw_input("\n[MENU]\n1. Add a new friend\n2. Delete a Friend (by " +
         "index)\n3. Delete a Friend (by name)\n4. Add a new friend (specific" +
