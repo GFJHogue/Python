@@ -13,10 +13,10 @@ pygame.mixer.music.load("audio/music/title.ogg")
 pygame.mixer.music.play()
 screen.blit(pygame.image.load("textures/background/title.png"),(0,0))
 pygame.display.update()
-pygame.time.wait(15000)
+#pygame.time.wait(15000)
 screen.blit(pygame.image.load("textures/background/horse.png"),(0,0))
 pygame.display.update()
-pygame.time.wait(5000)
+#pygame.time.wait(5000)
 
 
 font = pygame.font.Font(None,32)
@@ -568,14 +568,14 @@ def sprites(s,c):#len(c) >= 9
         elif(c[3] < 0):
             c[7] = 8
     elif(c[6] == 4):
-        if(c[3] > 0):
-            c[7] = 2
-        elif(c[3] < 0):
-            c[7] = 8
-        elif(c[2] < 0):
+        if(c[2] < 0):
             c[7] = 4
         elif(c[2] > 0):
             c[7] = 6
+        elif(c[3] > 0):
+            c[7] = 2
+        elif(c[3] < 0):
+            c[7] = 8
     if(c[2] == 0) and (c[3] == 0):
         s.frame = 0
         s.image = s.images[c[8]][c[7]][0]
@@ -739,8 +739,10 @@ def npc(s,c,e,r):
             c[3] =(2 * (linkXY[1] - c[1]) /
                 sqrt((linkXY[0] - c[0]) ** 2 + (linkXY[1] - c[1]) ** 2))
         elif c[0] > linkXY[0]:
-            c[2] = 2 * (linkXY[0] - c[0]) / sqrt((linkXY[0] - c[0]) ** 2 + (linkXY[1] - c[1]) ** 2)
-            c[3] = 2 * (linkXY[1] - c[1]) / sqrt((linkXY[0] - c[0]) ** 2 + (linkXY[1] - c[1]) ** 2)
+            c[2] =(2 * (linkXY[0] - c[0]) /
+                sqrt((linkXY[0] - c[0]) ** 2 + (linkXY[1] - c[1]) ** 2))
+            c[3] =(2 * (linkXY[1] - c[1]) /
+                sqrt((linkXY[0] - c[0]) ** 2 + (linkXY[1] - c[1]) ** 2))
         else:
             c[2] = 0
         
@@ -878,6 +880,7 @@ while True:
             pygame.mixer.music.play()
             screen.fill((74,156,74))
     elif room == 1:
+        move = 0
         room01()
         
         if room != 1:
