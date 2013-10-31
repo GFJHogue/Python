@@ -13,10 +13,10 @@ pygame.mixer.music.load("audio/music/title.ogg")
 pygame.mixer.music.play()
 screen.blit(pygame.image.load("textures/background/title.png"),(0,0))
 pygame.display.update()
-#pygame.time.wait(15000)
+pygame.time.wait(15000)
 screen.blit(pygame.image.load("textures/background/horse.png"),(0,0))
 pygame.display.update()
-#pygame.time.wait(5000)
+pygame.time.wait(5000)
 
 
 font = pygame.font.Font(None,32)
